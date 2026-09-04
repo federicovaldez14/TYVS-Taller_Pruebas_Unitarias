@@ -21,9 +21,6 @@ y finalmente si queda válida.
 - Cobertura de código (JaCoCo) y pruebas de mutación (PIT).
 - Gestión de defectos (`defectos.md`).
 
-## Equipo
-
-_(completar con los nombres del equipo — ver `integrantes.txt` en el repo)_
 
 ## Índice de la Wiki
 
