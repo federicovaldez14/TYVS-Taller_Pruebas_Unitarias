@@ -1,78 +1,29 @@
-# Registro de Defectos — EJEMPLO RESUELTO
+# Registro de defectos
 
-> ℹ️ **Este archivo es un ejemplo del profesor**, no su entrega. Muestra el nivel de detalle y los dos formatos aceptados.
-> Para su taller, parta de [`defectos_template.md`](defectos_template.md) y documente los defectos que **usted** encuentre al ejecutar sus propias pruebas.
+## Defecto 01
 
-Este documento recopila los defectos encontrados durante la ejecución de pruebas unitarias del proyecto **Registraduría**.
-Cada defecto debe documentarse claramente para facilitar su análisis y corrección.
-
-Los defectos de abajo se detectaron sobre el estado del código **al terminar la iteración 1** del README (cuando `registerVoter` aún devolvía `VALID` para cualquier entrada).
-
----
-
-## Formato 1: Lista detallada (narrativa)
-
-### Defecto 01
-
-- **Caso de prueba**: Persona con edad -1 (edad inválida).
-- **Entrada**: `Person(name="Juan", id=101, age=-1, gender=MALE, alive=true)`
-- **Resultado esperado**: `INVALID_AGE`
-- **Resultado obtenido**: `VALID`
-- **Causa probable**: Falta de validación de edad negativa en `Registry.registerVoter`.
-- **Estado**: Abierto
+- **Caso:** persona viva, id valido, edad = -1
+- **Esperado:** `INVALID_AGE`
+- **Obtenido:** `VALID`
+- **Version afectada:** implementacion minima resultante de la Iteracion 2 (Red-Green-Refactor), que solo validaba `p == null` y `!p.isAlive()`. Cualquier otra combinacion, incluida una edad de -1, caia directo en el `return RegisterResult.VALID;` que quedo como implementacion por defecto tras esa iteracion.
+- **Causa probable:** en TDD la implementacion solo crece hasta donde las pruebas existentes la obligan. Como todavia no existia una prueba para edades fuera del rango biologicamente posible, no habia ninguna guarda que la rechazara.
+- **Prueba que lo detecto (una vez agregada):** `RegistryTest.shouldRejectInvalidAgeBelowZero`
+- **Solucion aplicada:** se agrego la regla R4 en `Registry.registerVoter`, evaluada antes que R5 (mayoria de edad):
+  ```java
+  if (p.getAge() < MIN_AGE || p.getAge() > MAX_AGE) {
+      return RegisterResult.INVALID_AGE;
+  }
+  ```
+- **Estado:** Cerrado
 
 ---
 
-### Defecto 02
+## Defecto 02 (opcional - a completar por el equipo)
 
-- **Caso de prueba**: Persona muerta.
-- **Entrada**: `Person(name="Ana", id=102, age=45, gender=FEMALE, alive=false)`
-- **Resultado esperado**: `DEAD`
-- **Resultado obtenido**: `VALID`
-- **Causa probable**: No se evalúa la condición `alive=false`.
-- **Estado**: **Resuelto** — corregido en la iteración 2 (`if (!p.isAlive()) return RegisterResult.DEAD;`) y verificado con la prueba `shouldRejectDeadPerson`.
+- **Caso:**
+- **Esperado:**
+- **Obtenido:**
+- **Causa probable:**
+- **Estado:** Abierto / Cerrado
 
----
-
-### Defecto 03
-
-- **Caso de prueba**: Registro duplicado con el mismo `id`.
-- **Entradas**:
-  - Persona 1: `Person(name="Carlos", id=200, age=30, gender=MALE, alive=true)`
-  - Persona 2: `Person(name="Carla", id=200, age=25, gender=FEMALE, alive=true)`
-- **Resultado esperado**:
-  - Persona 1 → `VALID`
-  - Persona 2 → `DUPLICATED`
-- **Resultado obtenido**:
-  - Persona 1 → `VALID`
-  - Persona 2 → `VALID`
-- **Causa probable**: No hay verificación de `id` previamente registrado.
-- **Estado**: Abierto
-
----
-
-## Formato 2: Tabla de defectos (bug tracking)
-
-| ID | Caso de Prueba | Entrada | Resultado Esperado | Resultado Obtenido | Causa Probable | Estado |
-|-----|---------------------|---------|--------------------|--------------------|----------------|--------|
-| 01 | Edad inválida | `Person(id=101, age=-1, alive=true)` | `INVALID_AGE` | `VALID` | No se valida edad negativa | Abierto |
-| 02 | Persona muerta | `Person(id=102, age=45, alive=false)` | `DEAD` | `VALID` | No se evalúa condición `alive=false` | Resuelto (iteración 2) |
-| 03 | Registro duplicado | `Person(id=200, age=30, alive=true)` + `Person(id=200, age=25, alive=true)` | 1º → `VALID` 2º → `DUPLICATED` | 1º → `VALID` 2º → `VALID` | No hay verificación de `id` duplicado | Abierto |
-
----
-
-## Convenciones de Estado
-
-| Estado | Significado |
-|---------|-------------|
-| **Abierto** | El defecto fue detectado pero no corregido. |
-| **En progreso** | El defecto se encuentra en análisis o corrección. |
-| **Resuelto** | El defecto fue corregido y validado mediante pruebas. |
-
----
-
-## Observaciones
-
-- Se pueden usar **ambos formatos** o elegir uno como estándar de equipo.
-- El objetivo es **gestionar la calidad del software** y **demostrar un proceso sistemático de testing**.
-- Mantener este archivo actualizado durante todo el ciclo de desarrollo.
+> Sugerencia: corran `mvn test-compile org.pitest:pitest-maven:mutationCoverage` y revisen si algun mutante sobreviviente revela un defecto real (no solo una linea sin cubrir). Documentenlo aqui con el mismo formato.

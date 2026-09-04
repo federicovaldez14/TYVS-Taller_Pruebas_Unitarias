@@ -1,6 +1,7 @@
 package edu.unisabana.tyvs.domain.model;
 
 public class Person {
+
     private final String name;
     private final int id;
     private final int age;

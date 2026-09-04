@@ -1,47 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>edu.unisabana.tyvs</groupId>
-  <artifactId>registraduria</artifactId>
+  <artifactId>pruebasunitarias</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-  <name>registraduria</name>
-  <description>Taller de Pruebas Unitarias (TDD) - Testing y Validacion de Software</description>
+  <name>Taller de Pruebas Unitarias - Registraduria (TDD)</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Si tu JDK es anterior a 17, baja este valor al de tu computador (por ejemplo 11 u 8). -->
+    <!-- Baje este valor si su JDK es anterior (por ejemplo 11). Verifiquelo con: java -version -->
     <maven.compiler.release>17</maven.compiler.release>
-    <junit.version>5.10.2</junit.version>
-    <jqwik.version>1.8.4</jqwik.version>
-    <pitest.version>1.16.1</pitest.version>
-    <pitest.junit5.version>1.2.1</pitest.junit5.version>
   </properties>
 
   <dependencies>
-    <!-- JUnit 5 (Jupiter): @Test, @BeforeEach, @DisplayName, Assertions -->
+    <!-- JUnit 5 (Jupiter): @Test, @BeforeEach, @DisplayName, Assertions, @ParameterizedTest -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
+      <version>5.10.2</version>
       <scope>test</scope>
     </dependency>
 
-    <!-- jqwik: pruebas basadas en propiedades.
-         Genera cientos de entradas y reduce el contraejemplo al minimo (shrinking). -->
+    <!-- jqwik: pruebas basadas en propiedades. Requiere la plataforma JUnit 5. -->
     <dependency>
       <groupId>net.jqwik</groupId>
       <artifactId>jqwik</artifactId>
-      <version>${jqwik.version}</version>
+      <version>1.8.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -50,11 +46,17 @@
           <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
-      <!-- (Opcional pero recomendado) JaCoCo para cobertura -->
+
+      <!-- JaCoCo: cobertura de codigo. Reporte: target/site/jacoco/index.html -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.12</version>
+        <configuration>
+          <excludes>
+            <exclude>**/App.class</exclude>
+          </excludes>
+        </configuration>
         <executions>
           <execution>
             <id>prepare-agent</id>
@@ -71,21 +73,18 @@
           </execution>
         </executions>
       </plugin>
-      <!-- PIT: pruebas de mutacion.
-           JaCoCo responde "que lineas se ejecutaron"; PIT responde "si el codigo
-           cambia, se entera alguna prueba?". Es la unica de las dos que no se
-           puede falsificar con un assertTrue(true).
-           Ejecutar con: mvn test-compile org.pitest:pitest-maven:mutationCoverage -->
+
+      <!-- PIT: pruebas de mutacion. Reporte: target/pit-reports/index.html -->
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
-        <version>${pitest.version}</version>
+        <version>1.16.1</version>
         <dependencies>
           <!-- Necesario para que PIT reconozca pruebas JUnit 5. -->
           <dependency>
             <groupId>org.pitest</groupId>
             <artifactId>pitest-junit5-plugin</artifactId>
-            <version>${pitest.junit5.version}</version>
+            <version>1.2.1</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -100,10 +99,11 @@
             <param>HTML</param>
             <param>XML</param>
           </outputFormats>
-          <!-- Umbral de calidad: si el mutation score baja de 60, el build falla. -->
+          <!-- Si el mutation score baja de 60, el build falla. -->
           <mutationThreshold>60</mutationThreshold>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
