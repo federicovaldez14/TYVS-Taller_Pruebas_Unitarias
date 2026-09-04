@@ -57,29 +57,3 @@ mvn test-compile org.pitest:pitest-maven:mutationCoverage
 La primera regla que falla determina el resultado (por diseño, una persona
 muerta y menor de edad da `DEAD`, no `UNDERAGE`; ver `matriz-pruebas.md`
 y `shouldReturnDeadBeforeUnderageWhenBothApply`).
-
-## Antes de entregar
-
-1. Reemplaza `integrantes.txt` con los nombres reales del equipo.
-2. Corre `mvn clean verify` y `mvn test-compile org.pitest:pitest-maven:mutationCoverage`,
-   toma capturas de los reportes HTML generados.
-3. Copia el contenido de `wiki/*.md` a la Wiki del repositorio en GitHub
-   (una página por archivo: Home, Historia TDD, Patrón AAA, Clases de
-   Equivalencia, BDD, Resultados) y pega ahí las capturas del punto 2.
-4. Verifica que el código quedó versionado de verdad:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: taller registraduria completo (TDD, jqwik, jacoco, pit)"
-   git ls-files            # deben aparecer los .java y el pom.xml
-   git status --ignored    # confirma que no hay codigo fuente ignorado
-   ```
-5. Sube el repo a GitHub, crea la Wiki y comparte la URL pública.
-
-## Nota
-
-Este proyecto se generó offline (sin acceso a Maven Central desde este
-entorno), así que revisa que `mvn clean test` corra sin errores en tu
-máquina antes de entregar — las versiones de las dependencias son las
-mismas que trae la guía del taller (JUnit 5.10.2, jqwik 1.8.4, JaCoCo
-0.8.12, PIT 1.16.1 + pitest-junit5-plugin 1.2.1).
