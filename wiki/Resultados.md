@@ -1,9 +1,5 @@
 # Resultados
 
-> Esta página es una plantilla. Corran los comandos indicados en cada
-> sección, tomen la captura del reporte HTML correspondiente y péguenla
-> aquí antes de entregar.
-
 ## Cobertura de código (JaCoCo)
 
 ```bash
